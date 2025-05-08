@@ -14,25 +14,28 @@
           <a 
             routerLink="/admin/dashboard" 
             [class.text-neo-yellow]="activeLink === 'dashboard'"
-            class="py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
+            class="nav-item py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
           >
-            Dashboard
+            <mat-icon>dashboard</mat-icon>
+            <span class="item-text">Dashboard</span>
           </a>
           
           <a 
             routerLink="/admin/videos" 
             [class.text-neo-yellow]="activeLink === 'videos'"
-            class="py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
+            class="nav-item py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
           >
-            Videos
+            <mat-icon>video_library</mat-icon>
+            <span class="item-text">Videos</span>
           </a>
           
           <a 
             routerLink="/admin/users" 
             [class.text-neo-yellow]="activeLink === 'users'"
-            class="py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
+            class="nav-item py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
           >
-            Users
+            <mat-icon>people</mat-icon>
+            <span class="item-text">Users</span>
           </a>
         </nav>
       </div>
@@ -45,7 +48,7 @@
           <a 
             routerLink="/" 
             matTooltip="View Site" 
-            class="p-2 hover:bg-gray-800 rounded-full transition-colors"
+            class="p-2 hover:bg-gray-800 rounded-full transition-colors icon-button"
           >
             <mat-icon>public</mat-icon>
           </a>
@@ -53,7 +56,7 @@
           <button 
             (click)="logout()" 
             matTooltip="Logout" 
-            class="p-2 hover:bg-gray-800 rounded-full transition-colors"
+            class="p-2 hover:bg-gray-800 rounded-full transition-colors icon-button"
           >
             <mat-icon>exit_to_app</mat-icon>
           </button>
@@ -68,28 +71,28 @@
       <a 
         routerLink="/admin/dashboard" 
         [class.text-neo-yellow]="activeLink === 'dashboard'"
-        class="flex-1 text-center py-2"
+        class="flex-1 text-center py-2 nav-item flex-col"
       >
         <mat-icon class="block mx-auto">dashboard</mat-icon>
-        <span class="text-xs">Dashboard</span>
+        <span class="text-xs item-text">Dashboard</span>
       </a>
       
       <a 
         routerLink="/admin/videos" 
         [class.text-neo-yellow]="activeLink === 'videos'"
-        class="flex-1 text-center py-2"
+        class="flex-1 text-center py-2 nav-item flex-col"
       >
         <mat-icon class="block mx-auto">video_library</mat-icon>
-        <span class="text-xs">Videos</span>
+        <span class="text-xs item-text">Videos</span>
       </a>
       
       <a 
         routerLink="/admin/users" 
         [class.text-neo-yellow]="activeLink === 'users'"
-        class="flex-1 text-center py-2"
+        class="flex-1 text-center py-2 nav-item flex-col"
       >
         <mat-icon class="block mx-auto">people</mat-icon>
-        <span class="text-xs">Users</span>
+        <span class="text-xs item-text">Users</span>
       </a>
     </div>
   </div>

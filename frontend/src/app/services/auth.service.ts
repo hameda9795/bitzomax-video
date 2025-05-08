@@ -19,8 +19,19 @@ export class AuthService {
   private jwtHelper = new JwtHelperService();
 
   constructor(private http: HttpClient) {
-    const storedUser = localStorage.getItem('currentUser');
-    this.currentUserSubject = new BehaviorSubject<User | null>(storedUser ? JSON.parse(storedUser) : null);
+    // Safely initialize user data
+    let storedUser = null;
+    try {
+      const storedUserJson = localStorage.getItem('currentUser');
+      if (storedUserJson) {
+        storedUser = JSON.parse(storedUserJson);
+      }
+    } catch (error) {
+      console.error('Error parsing stored user data', error);
+      localStorage.removeItem('currentUser');
+    }
+    
+    this.currentUserSubject = new BehaviorSubject<User | null>(storedUser);
     this.currentUser$ = this.currentUserSubject.asObservable();
     
     // Initialize auth status subject based on token validity
@@ -33,7 +44,7 @@ export class AuthService {
   }
 
   login(loginRequest: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest)
+    return this.http.post<AuthResponse>(`${this.apiUrl}/signin`, loginRequest)
       .pipe(
         tap(response => {
           this.storeAuthResponse(response);
@@ -67,7 +78,20 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
-    return !!token && !this.jwtHelper.isTokenExpired(token);
+    
+    if (!token) {
+      return false;
+    }
+    
+    try {
+      return !this.jwtHelper.isTokenExpired(token);
+    } catch (error) {
+      console.error('Invalid token found in localStorage', error);
+      // Remove invalid token to prevent future errors
+      localStorage.removeItem('token');
+      localStorage.removeItem('currentUser');
+      return false;
+    }
   }
 
   isSubscribed(): boolean {
@@ -76,7 +100,20 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      return null;
+    }
+    
+    // Basic validation that it looks like a JWT (contains two dots)
+    if (token.split('.').length !== 3) {
+      console.error('Invalid token format found in localStorage');
+      localStorage.removeItem('token');
+      return null;
+    }
+    
+    return token;
   }
 
   private storeAuthResponse(response: AuthResponse): void {

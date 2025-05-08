@@ -13,7 +13,7 @@
           (keyup.enter)="onSearch(searchQuery.value)"
           #searchQuery>
         <button 
-          class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-neo-yellow p-1 border-2 border-black"
+          class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-neo-yellow p-1 border-2 border-black search-button"
           (click)="onSearch(searchQuery.value)">
           <mat-icon>search</mat-icon>
         </button>
@@ -32,10 +32,10 @@
           </li>
           <li>
             <button 
-              class="flex items-center gap-2 text-neo-white relative" 
+              class="flex items-center gap-2 text-neo-white relative user-button" 
               [matMenuTriggerFor]="userMenu">
               <span>{{ (currentUser$ | async)?.username }}</span>
-              <div class="w-8 h-8 bg-neo-blue rounded-full flex items-center justify-center border-2 border-neo-black overflow-hidden">
+              <div class="user-circle w-8 h-8 bg-neo-blue rounded-full flex items-center justify-center border-2 border-neo-black overflow-hidden">
                 <img 
                   *ngIf="(currentUser$ | async)?.profilePicture" 
                   [src]="(currentUser$ | async)?.profilePicture" 
@@ -46,33 +46,42 @@
               <span *ngIf="(currentUser$ | async)?.subscribed" class="premium-badge absolute -top-3 -right-3 text-xs">PREMIUM</span>
             </button>
             <mat-menu #userMenu="matMenu">
-              <a mat-menu-item routerLink="/profile">
+              <a mat-menu-item routerLink="/profile" class="menu-item">
                 <mat-icon>account_circle</mat-icon>
-                <span>Profile</span>
+                <span class="item-text">Profile</span>
               </a>
-              <a mat-menu-item routerLink="/profile/favorites">
+              <a mat-menu-item routerLink="/profile/favorites" class="menu-item">
                 <mat-icon>favorite</mat-icon>
-                <span>Favorites</span>
+                <span class="item-text">Favorites</span>
               </a>
-              <a mat-menu-item routerLink="/profile/history">
+              <a mat-menu-item routerLink="/profile/history" class="menu-item">
                 <mat-icon>history</mat-icon>
-                <span>Watch History</span>
+                <span class="item-text">Watch History</span>
               </a>
+              
+              <!-- Admin Panel Link - Only visible for ADMIN users -->
+              <ng-container *ngIf="(currentUser$ | async)?.role === 'ADMIN'">
+                <a mat-menu-item routerLink="/admin" class="text-neo-pink menu-item">
+                  <mat-icon>admin_panel_settings</mat-icon>
+                  <span class="item-text">Admin Panel</span>
+                </a>
+              </ng-container>
+              
               <ng-container *ngIf="!(currentUser$ | async)?.subscribed">
-                <a mat-menu-item routerLink="/subscription">
+                <a mat-menu-item routerLink="/subscription" class="menu-item">
                   <mat-icon>stars</mat-icon>
-                  <span>Go Premium</span>
+                  <span class="item-text">Go Premium</span>
                 </a>
               </ng-container>
               <ng-container *ngIf="(currentUser$ | async)?.subscribed">
-                <a mat-menu-item routerLink="/subscription">
+                <a mat-menu-item routerLink="/subscription" class="menu-item">
                   <mat-icon>settings</mat-icon>
-                  <span>Manage Subscription</span>
+                  <span class="item-text">Manage Subscription</span>
                 </a>
               </ng-container>
-              <button mat-menu-item (click)="logout()">
+              <button mat-menu-item (click)="logout()" class="menu-item">
                 <mat-icon>exit_to_app</mat-icon>
-                <span>Logout</span>
+                <span class="item-text">Logout</span>
               </button>
             </mat-menu>
           </li>

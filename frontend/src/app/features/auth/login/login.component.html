@@ -7,18 +7,17 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
           <div class="form-group">
-            <label for="email" class="block font-bold mb-2">Email</label>
+            <label for="usernameOrEmail" class="block font-bold mb-2">Username or Email</label>
             <input
-              type="email"
-              id="email"
-              formControlName="email"
+              type="text"
+              id="usernameOrEmail"
+              formControlName="usernameOrEmail"
               class="neo-input"
-              placeholder="your@email.com"
-              [ngClass]="{'border-neo-pink': hasError('email')}"
+              placeholder="Username or email"
+              [ngClass]="{'border-neo-pink': hasError('usernameOrEmail')}"
             />
-            <div *ngIf="hasError('email')" class="text-neo-pink text-sm mt-1">
-              <span *ngIf="loginForm.get('email')?.hasError('required')">Email is required</span>
-              <span *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</span>
+            <div *ngIf="hasError('usernameOrEmail')" class="text-neo-pink text-sm mt-1">
+              <span *ngIf="loginForm.get('usernameOrEmail')?.hasError('required')">Username or email is required</span>
             </div>
           </div>
 

@@ -3,6 +3,10 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Material Icons Import */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
 /* Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -39,15 +43,21 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .neo-button {
-    @apply font-bold py-2 px-6 rounded-lg text-center border-3 border-neo-black shadow-neo transform 
+    @apply font-bold py-3 px-8 rounded-lg text-center border-3 border-neo-black shadow-neo transform 
     transition-all duration-200 bg-white hover:translate-y-[-2px] hover:shadow-neo-hover active:translate-y-[1px] 
     active:shadow-neo-active focus:outline-none disabled:opacity-50 disabled:shadow-none 
     disabled:transform-none;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: ellipsis;
+    min-width: max-content;
   }
 
   .neo-badge {
     @apply inline-flex items-center gap-1 py-1 px-3 rounded-full font-bold text-xs border-2 
     border-neo-black shadow-sm;
+    white-space: nowrap;
+    overflow: visible;
   }
 
   .neo-input {
@@ -57,6 +67,8 @@ h1, h2, h3, h4, h5, h6 {
 
   .premium-badge {
     @apply bg-neo-yellow text-neo-black text-xs font-bold px-2 py-1 border-2 border-neo-black rounded;
+    white-space: nowrap;
+    overflow: visible;
   }
 }
 
@@ -118,6 +130,10 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700 !important;
   box-shadow: 4px 4px 0px var(--color-neo-black) !important;
   transition: all 0.2s ease-in-out !important;
+  padding: 0.75rem 1.5rem !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  min-width: max-content !important;
 }
 
 .mat-mdc-button:hover, .mat-mdc-raised-button:hover, .mat-mdc-outlined-button:hover {
@@ -140,6 +156,153 @@ h1, h2, h3, h4, h5, h6 {
   border: 3px solid var(--color-neo-black) !important;
   border-radius: 8px !important;
   box-shadow: 4px 4px 0px var(--color-neo-black) !important;
+}
+
+/* Add specific fixes for the search button and user controls */
+.search-button, button[type="submit"] {
+  min-width: 60px !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* Fix for the navigation buttons and user profile section */
+.nav-button, .user-button, nav button, header button {
+  min-width: max-content !important;
+  padding: 6px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* Fix for Quick Actions buttons in admin dashboard */
+.quick-action-button, [class*="Upload"], [class*="Manage"] {
+  padding: 12px 20px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  min-width: max-content !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Fix for Material Icons */
+.mat-icon {
+  font-family: 'Material Icons' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-size: 24px !important;
+  width: auto !important;
+  height: auto !important;
+  line-height: 1 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr !important;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  overflow: visible !important;
+}
+
+/* Fix for specific buttons with icons */
+button .mat-icon, 
+.neo-button .mat-icon, 
+.mat-mdc-button .mat-icon, 
+.mat-mdc-raised-button .mat-icon, 
+.mat-mdc-outlined-button .mat-icon {
+  margin-right: 8px !important;
+  vertical-align: middle !important;
+}
+
+/* Fix for icon buttons (just icon, no text) */
+.icon-button .mat-icon,
+button.icon-only .mat-icon,
+[class*="mat-mdc"][class*="button"][class*="icon-only"] .mat-icon {
+  margin-right: 0 !important;
+}
+
+/* Fix for navigation menu with icons and text */
+.nav-item, .menu-item {
+  display: flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  gap: 10px !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.nav-item .mat-icon, .menu-item .mat-icon {
+  font-size: 24px !important;
+  min-width: 24px !important;
+}
+
+.nav-item .item-text, .menu-item .item-text {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  display: inline-block !important;
+}
+
+/* Fix for user profile circles */
+.user-circle, .avatar-circle, [class*="circle"] {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 2px solid var(--color-neo-black) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.user-circle img, .avatar-circle img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Admin dashboard buttons with icons */
+.admin-button, .dashboard-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: max-content !important;
+  padding: 14px 20px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+.admin-button .mat-icon, .dashboard-item .mat-icon {
+  font-size: 28px !important;
+}
+
+/* Fix specifically for navigation sidebar items */
+[class*="account_circle"], 
+[class*="favorite"], 
+[class*="history"], 
+[class*="admin_panel_settings"], 
+[class*="stars"],
+[class*="exit_to_app"],
+[class*="add_circle"],
+[class*="video_library"],
+[class*="people"] {
+  font-family: 'Material Icons' !important;
+  display: inline-block !important;
+  text-rendering: auto !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  font-size: 24px !important;
+  margin-right: 12px !important;
+  vertical-align: middle !important;
 }
 
 /* Animation Utilities */
@@ -175,4 +338,46 @@ h1, h2, h3, h4, h5, h6 {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Material design icon fix for specific classes */
+.material-icons {
+  font-family: 'Material Icons' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  line-height: 1 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr !important;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Additional neo brutalism style enhancements for main UI components */
+.neo-sidebar {
+  border-right: 3px solid var(--color-neo-black) !important;
+  box-shadow: 4px 0px 0px var(--color-neo-black) !important;
+  padding: 20px !important;
+}
+
+.neo-menu-item {
+  padding: 12px 16px !important;
+  margin-bottom: 12px !important;
+  border: 2px solid var(--color-neo-black) !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.neo-menu-item:hover {
+  background-color: var(--color-neo-yellow) !important;
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 4px 4px 0px var(--color-neo-black) !important;
+}
+
+.neo-menu-item.active {
+  background-color: var(--color-neo-blue) !important;
+  color: var(--color-neo-white) !important;
 }
