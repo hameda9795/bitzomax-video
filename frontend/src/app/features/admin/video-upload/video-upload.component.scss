@@ -1,0 +1,152 @@
+@import '../../../../styles/neo-brutalism';
+
+.aspect-w-619 {
+  position: relative;
+  padding-bottom: 16.15%; /* 6:19 aspect ratio */
+}
+
+.aspect-h-100 {
+  overflow: hidden;
+}
+
+.aspect-w-16 {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.aspect-h-9 {
+  overflow: hidden;
+}
+
+.neo-card {
+  border-radius: 2px;
+  transform: rotate(-0.5deg);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: rotate(0.5deg) translateY(-3px);
+  }
+}
+
+.neo-header {
+  border-radius: 2px;
+  transform: rotate(-1deg);
+  margin-bottom: 2rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+// Custom styling for the mat-chip-grid
+::ng-deep {
+  .mat-mdc-chip-grid {
+    .mat-mdc-chip {
+      background-color: var(--neo-blue-light);
+      border: 2px solid var(--neo-black);
+      box-shadow: 3px 3px 0 var(--neo-black);
+      color: var(--neo-black);
+      font-weight: 500;
+      
+      .mat-icon {
+        color: var(--neo-black);
+      }
+    }
+  }
+  
+  // Style Mat expansion panel
+  .mat-expansion-panel {
+    border: 2px solid var(--neo-black);
+    box-shadow: 3px 3px 0 var(--neo-black);
+    border-radius: 2px !important;
+    
+    .mat-expansion-panel-header {
+      background-color: var(--neo-gray-100);
+      
+      &:hover {
+        background-color: var(--neo-gray-200);
+      }
+    }
+  }
+  
+  // Custom styling for buttons
+  .mat-raised-button {
+    border: 2px solid var(--neo-black);
+    box-shadow: 3px 3px 0 var(--neo-black);
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    
+    &:hover:not([disabled]) {
+      box-shadow: 5px 5px 0 var(--neo-black);
+      transform: translate(-2px, -2px);
+    }
+    
+    &:active:not([disabled]) {
+      box-shadow: 1px 1px 0 var(--neo-black);
+      transform: translate(2px, 2px);
+    }
+  }
+  
+  // Mat slide toggle
+  .mat-slide-toggle.mat-primary.mat-checked {
+    .mat-slide-toggle-thumb {
+      background-color: var(--neo-blue);
+    }
+    
+    .mat-slide-toggle-bar {
+      background-color: var(--neo-blue-light);
+    }
+  }
+}
+
+// Progress bar
+.conversion-progress {
+  height: 30px;
+  border: 2px solid var(--neo-black);
+  background-color: var(--neo-white);
+  margin: 1rem 0;
+  position: relative;
+  overflow: hidden;
+  
+  .progress-bar {
+    height: 100%;
+    background-color: var(--neo-blue);
+    transition: width 0.2s ease;
+  }
+  
+  .progress-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--neo-black);
+  }
+}
+
+// Loading spinner overlay
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  
+  .loading-content {
+    background-color: var(--neo-white);
+    border: 4px solid var(--neo-black);
+    box-shadow: 10px 10px 0 var(--neo-black);
+    padding: 2rem;
+    text-align: center;
+    transform: rotate(-1deg);
+  }
+}

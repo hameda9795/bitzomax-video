@@ -1,0 +1,131 @@
+<header class="bg-neo-black py-4 border-b-4 border-neo-yellow">
+  <div class="container mx-auto px-4 flex items-center justify-between">
+    <a routerLink="/" class="flex items-center gap-2">
+      <span class="text-neo-yellow text-3xl font-display font-bold">BITZOMAX</span>
+    </a>
+    
+    <div class="flex-1 px-8">
+      <div class="w-full max-w-xl mx-auto relative">
+        <input 
+          type="text" 
+          placeholder="Search videos..." 
+          class="neo-input w-full rounded-none bg-white"
+          (keyup.enter)="onSearch(searchQuery.value)"
+          #searchQuery>
+        <button 
+          class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-neo-yellow p-1 border-2 border-black"
+          (click)="onSearch(searchQuery.value)">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+    
+    <nav>
+      <ul class="flex items-center gap-6">
+        <li>
+          <a routerLink="/videos" class="text-neo-white hover:text-neo-yellow">Videos</a>
+        </li>
+        
+        <ng-container *ngIf="isAuthenticated">
+          <li>
+            <button class="neo-button" (click)="toggleUploadModal()">Upload</button>
+          </li>
+          <li>
+            <button 
+              class="flex items-center gap-2 text-neo-white relative" 
+              [matMenuTriggerFor]="userMenu">
+              <span>{{ (currentUser$ | async)?.username }}</span>
+              <div class="w-8 h-8 bg-neo-blue rounded-full flex items-center justify-center border-2 border-neo-black overflow-hidden">
+                <img 
+                  *ngIf="(currentUser$ | async)?.profilePicture" 
+                  [src]="(currentUser$ | async)?.profilePicture" 
+                  alt="Profile" 
+                  class="w-full h-full object-cover">
+                <mat-icon *ngIf="!(currentUser$ | async)?.profilePicture">person</mat-icon>
+              </div>
+              <span *ngIf="(currentUser$ | async)?.subscribed" class="premium-badge absolute -top-3 -right-3 text-xs">PREMIUM</span>
+            </button>
+            <mat-menu #userMenu="matMenu">
+              <a mat-menu-item routerLink="/profile">
+                <mat-icon>account_circle</mat-icon>
+                <span>Profile</span>
+              </a>
+              <a mat-menu-item routerLink="/profile/favorites">
+                <mat-icon>favorite</mat-icon>
+                <span>Favorites</span>
+              </a>
+              <a mat-menu-item routerLink="/profile/history">
+                <mat-icon>history</mat-icon>
+                <span>Watch History</span>
+              </a>
+              <ng-container *ngIf="!(currentUser$ | async)?.subscribed">
+                <a mat-menu-item routerLink="/subscription">
+                  <mat-icon>stars</mat-icon>
+                  <span>Go Premium</span>
+                </a>
+              </ng-container>
+              <ng-container *ngIf="(currentUser$ | async)?.subscribed">
+                <a mat-menu-item routerLink="/subscription">
+                  <mat-icon>settings</mat-icon>
+                  <span>Manage Subscription</span>
+                </a>
+              </ng-container>
+              <button mat-menu-item (click)="logout()">
+                <mat-icon>exit_to_app</mat-icon>
+                <span>Logout</span>
+              </button>
+            </mat-menu>
+          </li>
+        </ng-container>
+        
+        <ng-container *ngIf="!isAuthenticated">
+          <li>
+            <a routerLink="/auth/login" class="text-neo-white hover:text-neo-yellow">Login</a>
+          </li>
+          <li>
+            <a routerLink="/auth/signup" class="neo-button">Sign Up</a>
+          </li>
+        </ng-container>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="min-h-[calc(100vh-136px)]">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="bg-neo-black py-8 text-neo-white">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap justify-between">
+      <div class="mb-6 md:mb-0 w-full md:w-1/3">
+        <h2 class="text-neo-yellow text-2xl font-display font-bold mb-4">BITZOMAX</h2>
+        <p class="max-w-xs">The ultimate video platform for premium, high-quality poetry performances.</p>
+      </div>
+      
+      <div class="mb-6 md:mb-0 w-full md:w-1/4">
+        <h3 class="text-xl font-display font-bold mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:text-neo-yellow">About Us</a></li>
+          <li><a href="#" class="hover:text-neo-yellow">Contact</a></li>
+          <li><a href="#" class="hover:text-neo-yellow">Blog</a></li>
+          <li><a href="#" class="hover:text-neo-yellow">FAQ</a></li>
+        </ul>
+      </div>
+      
+      <div class="mb-6 md:mb-0 w-full md:w-1/4">
+        <h3 class="text-xl font-display font-bold mb-4">Legal</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:text-neo-yellow">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-neo-yellow">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-neo-yellow">Cookie Policy</a></li>
+          <li><a href="#" class="hover:text-neo-yellow">Copyright</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+      <p>&copy; 2025 Bitzomax. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,27 @@
+<div class="neo-dialog">
+  <h2 mat-dialog-title class="text-xl font-bold">{{ data.title }}</h2>
+  
+  <mat-dialog-content>
+    <p [innerHTML]="data.message"></p>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end" class="space-x-2 mt-4">
+    <button 
+      mat-button 
+      (click)="onCancel()"
+      class="neo-button bg-gray-200 text-neo-black font-medium py-2 px-4 border-2 border-neo-black hover:bg-gray-300 transition-colors"
+    >
+      {{ data.cancelText || 'Cancel' }}
+    </button>
+    
+    <button 
+      mat-button 
+      (click)="onConfirm()"
+      [class.bg-neo-red]="data.dangerous"
+      [class.bg-neo-blue]="!data.dangerous"
+      class="neo-button text-white font-medium py-2 px-4 border-2 border-neo-black shadow-neo"
+    >
+      {{ data.confirmText || 'Confirm' }}
+    </button>
+  </mat-dialog-actions>
+</div>

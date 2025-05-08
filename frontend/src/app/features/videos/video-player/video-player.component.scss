@@ -1,0 +1,136 @@
+.video-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.like-button {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.2);
+  }
+  
+  &.liked svg {
+    fill: #FF4B4B;
+    stroke: #FF4B4B;
+  }
+}
+
+.shadow-neo {
+  box-shadow: 4px 4px 0px #000000;
+}
+
+// Add Neo Brutalism interactive effects
+button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:active {
+    transform: translateY(2px);
+    box-shadow: 2px 2px 0px #000000;
+  }
+}
+
+// Custom animation for the subscription message
+@keyframes bounce {
+  0%, 100% { transform: rotate(2deg); }
+  50% { transform: rotate(2deg) translateY(-5px); }
+}
+
+.bg-neo-yellow {
+  animation: bounce 2s ease infinite;
+}
+
+.neo-video-player {
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.8);
+  border: 3px solid #000;
+  position: relative;
+  overflow: hidden;
+  
+  // Video controls overlay
+  .video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    transition: opacity 0.3s ease;
+  }
+  
+  // Premium content overlay
+  .premium-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    color: white;
+    z-index: 10;
+    
+    .premium-badge {
+      background-color: var(--neo-yellow);
+      color: black;
+      font-weight: bold;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+      transform: rotate(-3deg);
+    }
+  }
+}
+
+// Neo Brutalism card for video info
+.neo-card {
+  background-color: white;
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px #000;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px #000;
+  }
+}
+
+// Neo Brutalism buttons
+.neo-button {
+  border: 2px solid #000;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  position: relative;
+  
+  &:hover {
+    transform: translate(-2px, -2px);
+  }
+  
+  &.neo-button-primary {
+    background-color: var(--neo-yellow);
+    color: black;
+    box-shadow: 4px 4px 0px #000;
+    
+    &:hover {
+      box-shadow: 6px 6px 0px #000;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .premium-overlay {
+    padding: 1rem;
+    
+    h3 {
+      font-size: 1.25rem;
+    }
+  }
+}

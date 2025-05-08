@@ -1,0 +1,103 @@
+<div class="login-container flex min-h-screen">
+  <div class="login-form-container w-full md:w-1/2 p-8 flex flex-col justify-center items-center">
+    <div class="w-full max-w-md">
+      <div class="neo-card bg-neo-gray mb-6">
+        <h1 class="text-4xl font-bold mb-2">Login</h1>
+        <p class="text-lg mb-6">Welcome back to Bitzomax!</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div class="form-group">
+            <label for="email" class="block font-bold mb-2">Email</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="neo-input"
+              placeholder="your@email.com"
+              [ngClass]="{'border-neo-pink': hasError('email')}"
+            />
+            <div *ngIf="hasError('email')" class="text-neo-pink text-sm mt-1">
+              <span *ngIf="loginForm.get('email')?.hasError('required')">Email is required</span>
+              <span *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="block font-bold mb-2">Password</label>
+            <div class="relative">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password"
+                class="neo-input pr-10"
+                placeholder="••••••••"
+                [ngClass]="{'border-neo-pink': hasError('password')}"
+              />
+              <button 
+                type="button" 
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                (click)="togglePasswordVisibility()"
+              >
+                <span *ngIf="!showPassword">👁️</span>
+                <span *ngIf="showPassword">🔒</span>
+              </button>
+            </div>
+            <div *ngIf="hasError('password')" class="text-neo-pink text-sm mt-1">
+              <span *ngIf="loginForm.get('password')?.hasError('required')">Password is required</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                id="remember"
+                formControlName="remember"
+                class="h-4 w-4 border-neo-black"
+              />
+              <label for="remember" class="ml-2 text-sm">Remember me</label>
+            </div>
+            <a routerLink="/auth/forgot-password" class="text-sm text-neo-blue underline">Forgot password?</a>
+          </div>
+
+          <div *ngIf="errorMessage" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <p>{{ errorMessage }}</p>
+          </div>
+
+          <button
+            type="submit"
+            class="neo-button bg-neo-blue text-white w-full py-3"
+            [disabled]="loginForm.invalid || isLoading"
+          >
+            <span *ngIf="!isLoading">Log In</span>
+            <span *ngIf="isLoading">Logging In...</span>
+          </button>
+        </form>
+
+        <div class="mt-6 text-center">
+          <p>Don't have an account? <a routerLink="/auth/signup" class="text-neo-blue font-bold">Sign Up</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-graphic-container hidden md:block md:w-1/2 bg-neo-blue p-8 relative">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="grid grid-cols-10 gap-4 opacity-10 h-full w-full">
+        <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="col-span-1">
+          <div *ngFor="let j of [1,2,3,4,5,6,7,8,9,10]" class="aspect-square border-2 border-white"></div>
+        </div>
+      </div>
+    </div>
+    <div class="h-full flex flex-col justify-center items-center text-white relative z-10">
+      <div class="neo-card bg-white text-neo-black transform rotate-3 mb-8 animate-float">
+        <h2 class="text-3xl font-bold mb-2">Premium Content Awaits!</h2>
+        <p>Get access to exclusive videos with your Bitzomax subscription</p>
+      </div>
+      <div class="neo-card bg-neo-yellow text-neo-black transform -rotate-2 animate-float" style="animation-delay: 0.5s">
+        <h2 class="text-3xl font-bold mb-2">Creator-First Platform</h2>
+        <p>Support your favorite video creators directly</p>
+      </div>
+    </div>
+  </div>
+</div>

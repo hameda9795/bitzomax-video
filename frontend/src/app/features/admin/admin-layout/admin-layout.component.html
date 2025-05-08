@@ -1,0 +1,118 @@
+<div class="admin-layout min-h-screen flex flex-col">
+  <!-- Admin Header -->
+  <header class="bg-neo-black text-white py-4 border-b-4 border-neo-yellow">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <!-- Logo -->
+        <a routerLink="/" class="mr-8 flex items-center">
+          <span class="text-neo-yellow font-display text-2xl font-bold tracking-wider">BITZOMAX</span>
+          <span class="bg-neo-red ml-2 px-2 py-1 text-xs font-bold rounded-sm">ADMIN</span>
+        </a>
+        
+        <!-- Navigation -->
+        <nav class="hidden md:flex space-x-6">
+          <a 
+            routerLink="/admin/dashboard" 
+            [class.text-neo-yellow]="activeLink === 'dashboard'"
+            class="py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
+          >
+            Dashboard
+          </a>
+          
+          <a 
+            routerLink="/admin/videos" 
+            [class.text-neo-yellow]="activeLink === 'videos'"
+            class="py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
+          >
+            Videos
+          </a>
+          
+          <a 
+            routerLink="/admin/users" 
+            [class.text-neo-yellow]="activeLink === 'users'"
+            class="py-2 border-b-2 border-transparent hover:border-neo-yellow transition-colors duration-200"
+          >
+            Users
+          </a>
+        </nav>
+      </div>
+      
+      <!-- User Menu -->
+      <div class="flex items-center">
+        <span class="mr-4 hidden sm:inline">{{ username }}</span>
+        
+        <div class="flex space-x-2">
+          <a 
+            routerLink="/" 
+            matTooltip="View Site" 
+            class="p-2 hover:bg-gray-800 rounded-full transition-colors"
+          >
+            <mat-icon>public</mat-icon>
+          </a>
+          
+          <button 
+            (click)="logout()" 
+            matTooltip="Logout" 
+            class="p-2 hover:bg-gray-800 rounded-full transition-colors"
+          >
+            <mat-icon>exit_to_app</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Mobile Navigation -->
+  <div class="md:hidden bg-gray-900 border-b border-gray-800">
+    <div class="container mx-auto px-4 py-2 flex justify-between">
+      <a 
+        routerLink="/admin/dashboard" 
+        [class.text-neo-yellow]="activeLink === 'dashboard'"
+        class="flex-1 text-center py-2"
+      >
+        <mat-icon class="block mx-auto">dashboard</mat-icon>
+        <span class="text-xs">Dashboard</span>
+      </a>
+      
+      <a 
+        routerLink="/admin/videos" 
+        [class.text-neo-yellow]="activeLink === 'videos'"
+        class="flex-1 text-center py-2"
+      >
+        <mat-icon class="block mx-auto">video_library</mat-icon>
+        <span class="text-xs">Videos</span>
+      </a>
+      
+      <a 
+        routerLink="/admin/users" 
+        [class.text-neo-yellow]="activeLink === 'users'"
+        class="flex-1 text-center py-2"
+      >
+        <mat-icon class="block mx-auto">people</mat-icon>
+        <span class="text-xs">Users</span>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <main class="flex-grow bg-gray-100">
+    <div class="container mx-auto">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="bg-neo-black text-white py-4 border-t-4 border-neo-yellow">
+    <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center">
+      <div class="mb-4 sm:mb-0">
+        <p class="text-sm">© {{ 2025 | date:'yyyy' }} Bitzomax Video Subscription Platform</p>
+      </div>
+      
+      <div class="flex space-x-4">
+        <a routerLink="/admin/dashboard" class="text-sm hover:text-neo-yellow transition-colors">Dashboard</a>
+        <a routerLink="/admin/videos" class="text-sm hover:text-neo-yellow transition-colors">Videos</a>
+        <a routerLink="/admin/users" class="text-sm hover:text-neo-yellow transition-colors">Users</a>
+      </div>
+    </div>
+  </footer>
+</div>

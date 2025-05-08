@@ -1,0 +1,167 @@
+<main>
+  <!-- Hero Section -->
+  <section class="bg-neo-yellow border-b-3 border-neo-black">
+    <div class="container mx-auto px-4 py-16 md:py-32">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="order-2 md:order-1">
+          <h1 class="text-5xl md:text-6xl font-display font-bold mb-6 leading-tight">
+            Express Yourself Through <span class="text-neo-pink">Video Content</span>
+          </h1>
+          <p class="text-xl mb-8">
+            Join Bitzomax, the platform where creativity meets community. Share your videos, connect with creators, and explore premium content.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button 
+              *ngIf="!isAuthenticated" 
+              (click)="navigateToSignup()" 
+              class="neo-button bg-neo-black text-white hover:bg-gray-800">
+              Get Started
+            </button>
+            <button 
+              (click)="navigateToVideos()" 
+              class="neo-button">
+              Explore Videos
+            </button>
+          </div>
+        </div>
+        <div class="order-1 md:order-2">
+          <div class="neo-card bg-white p-0 overflow-hidden relative">
+            <div class="absolute top-2 right-2 z-10">
+              <span class="neo-badge bg-neo-pink">
+                <mat-icon class="text-sm">play_arrow</mat-icon>
+                Featured
+              </span>
+            </div>
+            <img src="assets/images/hero-video-thumbnail.jpg" alt="Featured video content" class="w-full h-full object-cover">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="bg-white py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-display font-bold mb-12 text-center">Why Creators Love Bitzomax</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="neo-card bg-neo-gray hover:translate-y-[-8px] transition-transform duration-300">
+          <div class="mb-4">
+            <div class="bg-neo-purple text-white w-12 h-12 flex items-center justify-center rounded-full shadow-neo">
+              <mat-icon>visibility</mat-icon>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Wide Audience</h3>
+          <p>Connect with millions of viewers worldwide and build your fanbase with our algorithm-driven discovery.</p>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="neo-card bg-neo-gray hover:translate-y-[-8px] transition-transform duration-300">
+          <div class="mb-4">
+            <div class="bg-neo-orange text-white w-12 h-12 flex items-center justify-center rounded-full shadow-neo">
+              <mat-icon>payments</mat-icon>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Monetization</h3>
+          <p>Earn money through our premium subscription model, allowing your biggest fans to support your creative work.</p>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="neo-card bg-neo-gray hover:translate-y-[-8px] transition-transform duration-300">
+          <div class="mb-4">
+            <div class="bg-neo-blue text-white w-12 h-12 flex items-center justify-center rounded-full shadow-neo">
+              <mat-icon>bar_chart</mat-icon>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Analytics</h3>
+          <p>Access detailed insights about your audience and content performance to grow your channel strategically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending Videos Section -->
+  <section class="bg-neo-gray py-16">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-display font-bold">Trending Now</h2>
+        <a routerLink="/videos" class="text-neo-blue font-bold flex items-center gap-1">
+          See all
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+      
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="flex justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neo-blue"></div>
+      </div>
+      
+      <!-- Error State -->
+      <div *ngIf="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+        <p>{{ error }}</p>
+        <button (click)="loadTrendingVideos()" class="text-neo-blue font-bold mt-2">Try Again</button>
+      </div>
+      
+      <!-- Videos Grid -->
+      <div *ngIf="!isLoading && !error" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Video Card (Repeat for each video) -->
+        <div *ngFor="let video of trendingVideos" class="neo-card bg-white p-0 overflow-hidden hover:translate-y-[-4px] transition-all duration-300">
+          <!-- Thumbnail -->
+          <div class="relative">
+            <img [src]="video.thumbnailUrl" [alt]="video.title" title="Video thumbnail" class="w-full aspect-video object-cover">
+            <div class="absolute bottom-2 right-2">
+              <span class="bg-black bg-opacity-70 text-white text-xs px-2 py-1">{{ video.duration }}</span>
+            </div>
+            <div *ngIf="video.premium" class="absolute top-2 right-2">
+              <span class="premium-badge">Premium</span>
+            </div>
+          </div>
+          
+          <!-- Video Info -->
+          <div class="p-4">
+            <h3 class="text-lg font-bold line-clamp-2 mb-2">{{ video.title }}</h3>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">{{ video.uploadDate | date }}</span>
+              <span class="flex items-center gap-1 text-sm">
+                <mat-icon class="text-sm">visibility</mat-icon>
+                {{ video.viewCount }}
+              </span>
+            </div>
+            <div class="mt-2">
+              <a [routerLink]="['/videos', video.id]" class="text-neo-blue font-bold">Watch Now</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Empty State -->
+        <div *ngIf="trendingVideos.length === 0" class="col-span-full text-center py-12">
+          <p class="text-xl">No trending videos available at the moment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-neo-black text-white py-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-4xl font-display font-bold mb-6">Ready to Share Your Story?</h2>
+        <p class="text-xl mb-8">Join thousands of creators who are building their audience and sharing their passion on Bitzomax.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button 
+            *ngIf="!isAuthenticated" 
+            (click)="navigateToSignup()" 
+            class="neo-button bg-neo-yellow text-neo-black hover:bg-yellow-400">
+            Create an Account
+          </button>
+          <button 
+            (click)="navigateToVideos()" 
+            class="neo-button bg-white text-neo-black hover:bg-gray-100">
+            Discover Content
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

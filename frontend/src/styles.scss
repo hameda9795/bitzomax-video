@@ -1,0 +1,178 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&display=swap');
+
+/* Variables */
+:root {
+  --color-neo-black: #0E0E0E;
+  --color-neo-white: #FFFFFF;
+  --color-neo-gray: #F4F4F4;
+  --color-neo-blue: #2761E7;
+  --color-neo-green: #18A66A;
+  --color-neo-yellow: #FFDC60;
+  --color-neo-pink: #FF4092;
+  --color-neo-purple: #7B5BF2;
+  --color-neo-orange: #FF7D45;
+  --shadow-neo: 4px 4px 0px var(--color-neo-black);
+  --border-neo: 3px solid var(--color-neo-black);
+}
+
+/* Base Styles */
+body {
+  font-family: 'Work Sans', sans-serif;
+  color: var(--color-neo-black);
+  background-color: var(--color-neo-white);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Neo Brutalism Components */
+@layer components {
+  .neo-card {
+    @apply rounded-lg border-3 border-neo-black shadow-neo p-6 relative;
+  }
+
+  .neo-button {
+    @apply font-bold py-2 px-6 rounded-lg text-center border-3 border-neo-black shadow-neo transform 
+    transition-all duration-200 bg-white hover:translate-y-[-2px] hover:shadow-neo-hover active:translate-y-[1px] 
+    active:shadow-neo-active focus:outline-none disabled:opacity-50 disabled:shadow-none 
+    disabled:transform-none;
+  }
+
+  .neo-badge {
+    @apply inline-flex items-center gap-1 py-1 px-3 rounded-full font-bold text-xs border-2 
+    border-neo-black shadow-sm;
+  }
+
+  .neo-input {
+    @apply w-full border-3 border-neo-black rounded-lg p-3 shadow-neo focus:outline-none
+    focus:ring-2 focus:ring-neo-blue focus:ring-offset-2;
+  }
+
+  .premium-badge {
+    @apply bg-neo-yellow text-neo-black text-xs font-bold px-2 py-1 border-2 border-neo-black rounded;
+  }
+}
+
+/* Extended Tailwind Classes */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 3px 3px 0px var(--color-neo-black);
+  }
+
+  .border-3 {
+    border-width: 3px;
+  }
+
+  .shadow-neo {
+    box-shadow: 4px 4px 0px var(--color-neo-black);
+  }
+
+  .shadow-neo-hover {
+    box-shadow: 6px 6px 0px var(--color-neo-black);
+  }
+
+  .shadow-neo-active {
+    box-shadow: 2px 2px 0px var(--color-neo-black);
+  }
+}
+
+/* Custom Colors for Tailwind */
+.bg-neo-black { background-color: var(--color-neo-black); }
+.bg-neo-white { background-color: var(--color-neo-white); }
+.bg-neo-gray { background-color: var(--color-neo-gray); }
+.bg-neo-blue { background-color: var(--color-neo-blue); }
+.bg-neo-green { background-color: var(--color-neo-green); }
+.bg-neo-yellow { background-color: var(--color-neo-yellow); }
+.bg-neo-pink { background-color: var(--color-neo-pink); }
+.bg-neo-purple { background-color: var(--color-neo-purple); }
+.bg-neo-orange { background-color: var(--color-neo-orange); }
+
+.text-neo-black { color: var(--color-neo-black); }
+.text-neo-white { color: var(--color-neo-white); }
+.text-neo-blue { color: var(--color-neo-blue); }
+.text-neo-green { color: var(--color-neo-green); }
+.text-neo-yellow { color: var(--color-neo-yellow); }
+.text-neo-pink { color: var(--color-neo-pink); }
+.text-neo-purple { color: var(--color-neo-purple); }
+.text-neo-orange { color: var(--color-neo-orange); }
+
+.border-neo-black { border-color: var(--color-neo-black); }
+.border-neo-blue { border-color: var(--color-neo-blue); }
+.border-neo-green { border-color: var(--color-neo-green); }
+.border-neo-yellow { border-color: var(--color-neo-yellow); }
+.border-neo-pink { border-color: var(--color-neo-pink); }
+.border-neo-purple { border-color: var(--color-neo-purple); }
+
+/* Angular Material Overrides for Neo Brutalism */
+.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-outlined-button {
+  border-radius: 8px !important;
+  border: 3px solid var(--color-neo-black) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  box-shadow: 4px 4px 0px var(--color-neo-black) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.mat-mdc-button:hover, .mat-mdc-raised-button:hover, .mat-mdc-outlined-button:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0px var(--color-neo-black) !important;
+}
+
+.mat-mdc-button:active, .mat-mdc-raised-button:active, .mat-mdc-outlined-button:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 2px 2px 0px var(--color-neo-black) !important;
+}
+
+/* Form Field Styles */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--color-neo-white) !important;
+  border: 3px solid var(--color-neo-black) !important;
+  border-radius: 8px !important;
+  box-shadow: 4px 4px 0px var(--color-neo-black) !important;
+}
+
+/* Animation Utilities */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-10px);
+  }
+  100% {
+    transform: translatey(0px);
+  }
+}
+
+/* Hide scrollbar for clean design */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border: 2px solid #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

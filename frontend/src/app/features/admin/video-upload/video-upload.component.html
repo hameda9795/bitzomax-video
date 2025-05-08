@@ -1,0 +1,268 @@
+<div class="p-6">
+  <div class="neo-header bg-neo-yellow border-4 border-neo-black shadow-neo-lg p-6 mb-8">
+    <h1 class="text-3xl font-display font-bold mb-2">{{ isEditing ? 'Edit Video' : 'Upload New Video' }}</h1>
+    <p class="text-lg">{{ isEditing ? 'Update video details and metadata' : 'Add a new video to the platform' }}</p>
+  </div>
+  
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-8 text-center">
+      <mat-spinner color="accent" diameter="48" class="mx-auto mb-4"></mat-spinner>
+      <p class="text-lg font-medium">{{ isEditing ? 'Loading video data...' : 'Uploading video...' }}</p>
+    </div>
+  </div>
+  
+  <!-- Error message -->
+  <div *ngIf="error" class="neo-card bg-neo-red text-white border-4 border-neo-black shadow-neo p-6 mb-8">
+    <p class="text-lg font-medium mb-4">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="error = null">Dismiss</button>
+  </div>
+  
+  <!-- Form content -->
+  <div *ngIf="!isLoading" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Video preview card -->
+    <div class="lg:col-span-1">
+      <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6">
+        <h2 class="text-xl font-bold mb-4">Video Preview</h2>
+        
+        <!-- Video preview -->
+        <div *ngIf="previewUrl" class="aspect-w-619 aspect-h-100 mb-4 overflow-hidden border-2 border-gray-300">
+          <video #videoPreview [src]="previewUrl" controls class="object-contain w-full h-full"></video>
+        </div>
+        
+        <!-- No video selected placeholder -->
+        <div *ngIf="!previewUrl" class="aspect-w-619 aspect-h-100 mb-4 flex items-center justify-center bg-gray-100 border-2 border-gray-300">
+          <div class="text-center p-4">
+            <mat-icon class="text-gray-400 text-5xl">videocam_off</mat-icon>
+            <p class="mt-2 text-gray-500">No video selected</p>
+          </div>
+        </div>
+        
+        <!-- Video selection button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="browseVideo()" 
+          class="w-full mt-2"
+          [disabled]="isLoading || isConverting"
+        >
+          {{ previewUrl ? 'Change Video' : 'Select Video' }}
+        </button>
+        <input #fileInput type="file" accept="video/*" (change)="onFileSelected($event, 'video')" hidden>
+        
+        <!-- Convert to WebM button -->
+        <button 
+          *ngIf="videoFile && videoFile.type !== 'video/webm'"
+          mat-stroked-button 
+          color="accent" 
+          (click)="convertToWebM()" 
+          class="w-full mt-2"
+          [disabled]="isLoading || isConverting"
+        >
+          <span *ngIf="!isConverting">Convert to WebM for Smaller Size</span>
+          <span *ngIf="isConverting">Converting... {{ conversionProgress }}%</span>
+        </button>
+        
+        <!-- File info -->
+        <div *ngIf="videoFile" class="mt-4 text-sm">
+          <p><span class="font-medium">Filename:</span> {{ videoFile.name }}</p>
+          <p><span class="font-medium">Size:</span> {{ videoFile.size | number:'1.0-0' }} bytes</p>
+          <p><span class="font-medium">Type:</span> {{ videoFile.type }}</p>
+        </div>
+      </div>
+      
+      <!-- Thumbnail card -->
+      <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 mt-6">
+        <h2 class="text-xl font-bold mb-4">Thumbnail</h2>
+        
+        <!-- Thumbnail preview -->
+        <div *ngIf="thumbnailUrl" class="mb-4 overflow-hidden border-2 border-gray-300 aspect-w-16 aspect-h-9">
+          <img [src]="thumbnailUrl" [alt]="'Video thumbnail preview'" title="Video thumbnail preview" class="object-cover w-full h-full">
+        </div>
+        
+        <!-- No thumbnail selected placeholder -->
+        <div *ngIf="!thumbnailUrl" class="mb-4 flex items-center justify-center bg-gray-100 border-2 border-gray-300 aspect-w-16 aspect-h-9">
+          <div class="text-center p-4">
+            <mat-icon class="text-gray-400 text-5xl">image</mat-icon>
+            <p class="mt-2 text-gray-500">No thumbnail selected</p>
+          </div>
+        </div>
+        
+        <!-- Thumbnail selection button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="browseThumbnail()" 
+          class="w-full"
+          [disabled]="isLoading"
+        >
+          {{ thumbnailUrl ? 'Change Thumbnail' : 'Select Thumbnail' }}
+        </button>
+        <input #thumbnailInput type="file" accept="image/*" (change)="onFileSelected($event, 'thumbnail')" hidden>
+      </div>
+    </div>
+    
+    <!-- Form fields -->
+    <div class="lg:col-span-2">
+      <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6">
+        <h2 class="text-xl font-bold mb-6">Video Details</h2>
+        
+        <!-- Title field -->
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Video Title</mat-label>
+          <input 
+            matInput 
+            formControlName="title" 
+            placeholder="Enter a descriptive title" 
+            required
+          >
+          <mat-hint>3-100 characters</mat-hint>
+          <mat-error *ngIf="uploadForm.get('title')?.hasError('required')">
+            Title is required
+          </mat-error>
+          <mat-error *ngIf="uploadForm.get('title')?.hasError('minlength')">
+            Title must be at least 3 characters
+          </mat-error>
+          <mat-error *ngIf="uploadForm.get('title')?.hasError('maxlength')">
+            Title cannot exceed 100 characters
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Description field -->
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Description</mat-label>
+          <textarea 
+            matInput 
+            formControlName="description" 
+            placeholder="Provide a detailed description" 
+            rows="4"
+            required
+          ></textarea>
+          <mat-hint>10-1000 characters</mat-hint>
+          <mat-error *ngIf="uploadForm.get('description')?.hasError('required')">
+            Description is required
+          </mat-error>
+          <mat-error *ngIf="uploadForm.get('description')?.hasError('minlength')">
+            Description must be at least 10 characters
+          </mat-error>
+          <mat-error *ngIf="uploadForm.get('description')?.hasError('maxlength')">
+            Description cannot exceed 1000 characters
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Poem text field -->
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Poem Text (Optional)</mat-label>
+          <textarea 
+            matInput 
+            formControlName="poemText" 
+            placeholder="If this video is a poem, include the text here" 
+            rows="4"
+          ></textarea>
+          <mat-hint>Optional: Include poem text for accessibility and SEO</mat-hint>
+        </mat-form-field>
+        
+        <!-- Tags field -->
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Tags</mat-label>
+          <mat-chip-grid #chipGrid>
+            <mat-chip-row 
+              *ngFor="let tag of tags" 
+              (removed)="removeTag(tag)"
+            >
+              {{tag}}
+              <button matChipRemove type="button">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input 
+              placeholder="Press Enter to add tags (max 10)"
+              [matChipInputFor]="chipGrid"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (keydown.enter)="addTag($event)"
+            />
+          </mat-chip-grid>
+          <mat-hint>Add up to 10 tags to improve discoverability</mat-hint>
+        </mat-form-field>
+        
+        <!-- Premium content toggle -->
+        <div class="mb-6">
+          <mat-slide-toggle formControlName="premium" color="primary">
+            Premium Content
+          </mat-slide-toggle>
+          <p class="mt-2 text-gray-600 text-sm">
+            Toggle on to make this video available only to subscribers
+          </p>
+        </div>
+        
+        <!-- SEO section -->
+        <mat-expansion-panel class="mb-8">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon class="mr-2">search</mat-icon>
+              SEO Settings
+            </mat-panel-title>
+            <mat-panel-description>
+              Search Engine Optimization
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          
+          <!-- SEO Title -->
+          <mat-form-field appearance="outline" class="w-full mb-4">
+            <mat-label>SEO Title (Optional)</mat-label>
+            <input 
+              matInput 
+              formControlName="seoTitle" 
+              placeholder="Alternative title for search engines" 
+            >
+            <mat-hint>If different from video title</mat-hint>
+          </mat-form-field>
+          
+          <!-- SEO Description -->
+          <mat-form-field appearance="outline" class="w-full mb-4">
+            <mat-label>SEO Description (Optional)</mat-label>
+            <textarea 
+              matInput 
+              formControlName="seoDescription" 
+              placeholder="Alternative description for search engines" 
+              rows="2"
+            ></textarea>
+          </mat-form-field>
+          
+          <!-- SEO Keywords -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>SEO Keywords (Optional)</mat-label>
+            <input 
+              matInput 
+              formControlName="seoKeywords" 
+              placeholder="Comma-separated keywords" 
+            >
+            <mat-hint>Separate keywords with commas</mat-hint>
+          </mat-form-field>
+        </mat-expansion-panel>
+        
+        <!-- Form actions -->
+        <div class="flex justify-end mt-8 space-x-4">
+          <button 
+            type="button" 
+            mat-stroked-button 
+            color="warn" 
+            (click)="onCancel()"
+            [disabled]="isLoading || isConverting"
+          >
+            Cancel
+          </button>
+          
+          <button 
+            type="submit" 
+            mat-raised-button 
+            color="primary"
+            [disabled]="isLoading || isConverting"
+          >
+            {{ isEditing ? 'Update Video' : 'Upload Video' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

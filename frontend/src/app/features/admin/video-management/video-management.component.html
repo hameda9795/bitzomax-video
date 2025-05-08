@@ -1,0 +1,197 @@
+<div class="admin-container p-6">
+  <div class="neo-header bg-neo-yellow border-4 border-neo-black shadow-neo-lg p-6 mb-8">
+    <div class="flex flex-wrap justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-display font-bold mb-2">Video Management</h1>
+        <p class="text-lg">Manage, update, and analyze your video content</p>
+      </div>
+      <button 
+        (click)="uploadNewVideo()" 
+        class="neo-button bg-neo-black text-white font-bold py-3 px-6 border-2 border-neo-black shadow-neo hover:translate-y-[-4px] transition-all duration-300 flex items-center"
+      >
+        <mat-icon class="mr-2">add</mat-icon>
+        Upload New Video
+      </button>
+    </div>
+  </div>
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-8 text-center">
+      <mat-spinner color="accent" diameter="48" class="mx-auto mb-4"></mat-spinner>
+      <p class="text-lg font-medium">Loading videos...</p>
+    </div>
+  </div>
+  
+  <!-- Error State -->
+  <div *ngIf="error" class="neo-card bg-neo-red text-white border-4 border-neo-black shadow-neo p-6 mb-8">
+    <p class="text-lg font-medium mb-4">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadVideos()">
+      Try Again
+    </button>
+  </div>
+  
+  <!-- Content Container -->
+  <div *ngIf="!isLoading && !error" class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6">
+    <!-- Filter -->
+    <div class="mb-6">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Filter videos</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search by title, uploader, tags...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full">
+        
+        <!-- Thumbnail Column -->
+        <ng-container matColumnDef="thumbnail">
+          <th mat-header-cell *matHeaderCellDef> Thumbnail </th>
+          <td mat-cell *matCellDef="let video"> 
+            <div class="w-16 h-16 overflow-hidden border-2 border-neo-black">
+              <img [src]="video.thumbnailUrl" [alt]="video.title + ' thumbnail'" title="{{ video.title + ' thumbnail' }}" class="w-full h-full object-cover">
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+          <td mat-cell *matCellDef="let video"> 
+            <div class="font-medium">{{ video.title }}</div>
+            <div class="text-xs text-gray-600">
+              <span *ngFor="let tag of video.tags; let last = last" class="mr-1">
+                #{{ tag }}{{ !last ? ',' : '' }}
+              </span>
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Uploader Column -->
+        <ng-container matColumnDef="uploader">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Uploader </th>
+          <td mat-cell *matCellDef="let video"> {{ video.uploader.username }} </td>
+        </ng-container>
+        
+        <!-- Premium Column -->
+        <ng-container matColumnDef="premium">
+          <th mat-header-cell *matHeaderCellDef> Premium </th>
+          <td mat-cell *matCellDef="let video"> 
+            <div class="flex items-center">
+              <mat-slide-toggle 
+                [checked]="video.premium" 
+                (change)="togglePremiumStatus(video)"
+                color="primary"
+                class="mr-2">
+              </mat-slide-toggle>
+              <span 
+                *ngIf="video.premium" 
+                class="bg-neo-yellow text-neo-black px-2 py-1 text-xs font-bold border-2 border-neo-black shadow-neo transform rotate-3"
+              >
+                PREMIUM
+              </span>
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Views Column -->
+        <ng-container matColumnDef="views">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Views </th>
+          <td mat-cell *matCellDef="let video"> {{ video.viewCount | number }} </td>
+        </ng-container>
+        
+        <!-- Likes Column -->
+        <ng-container matColumnDef="likes">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Likes </th>
+          <td mat-cell *matCellDef="let video"> 
+            <div class="flex items-center">
+              <mat-icon class="text-neo-red mr-1">favorite</mat-icon>
+              {{ video.likesCount | number }} 
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Created At Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+          <td mat-cell *matCellDef="let video"> {{ formatDate(video.uploadDate) }} </td>
+        </ng-container>
+        
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let video"> 
+            <div class="flex space-x-2">
+              <button 
+                mat-icon-button 
+                matTooltip="Edit Video"
+                (click)="editVideo(video.id)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              
+              <button 
+                mat-icon-button 
+                matTooltip="View Analytics"
+                (click)="viewAnalytics(video.id)"
+              >
+                <mat-icon>analytics</mat-icon>
+              </button>
+              
+              <button 
+                mat-icon-button 
+                matTooltip="Delete Video"
+                color="warn"
+                (click)="deleteVideo(video.id, video.title)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Row Definitions -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr 
+          mat-row 
+          *matRowDef="let row; columns: displayedColumns;" 
+          class="hover:bg-gray-100 transition-colors"
+        ></tr>
+        
+        <!-- No Data Row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell py-4 text-center" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center p-6">
+              <mat-icon class="text-6xl text-gray-300 mb-4">videocam_off</mat-icon>
+              <p class="text-lg font-medium text-gray-500">No videos found</p>
+              <p *ngIf="dataSource && dataSource.filter" class="text-gray-500">
+                No results matching "{{dataSource.filter}}"
+              </p>
+              <button 
+                *ngIf="dataSource && !dataSource.data.length" 
+                mat-raised-button 
+                color="primary" 
+                class="mt-4"
+                (click)="uploadNewVideo()"
+              >
+                Upload Your First Video
+              </button>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSize]="10"
+      [length]="totalVideos"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="mt-4"
+    ></mat-paginator>
+  </div>
+</div>

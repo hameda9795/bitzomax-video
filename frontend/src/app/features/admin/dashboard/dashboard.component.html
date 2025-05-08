@@ -1,0 +1,150 @@
+<div class="admin-container p-6">
+  <div class="neo-header bg-neo-yellow border-4 border-neo-black shadow-neo-lg p-6 mb-8">
+    <h1 class="text-3xl font-display font-bold mb-2">Admin Dashboard</h1>
+    <p class="text-lg">Platform overview and statistics</p>
+  </div>
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-8 text-center">
+      <mat-spinner color="accent" diameter="48" class="mx-auto mb-4"></mat-spinner>
+      <p class="text-lg font-medium">Loading statistics...</p>
+    </div>
+  </div>
+  
+  <!-- Error State -->
+  <div *ngIf="error" class="neo-card bg-neo-red text-white border-4 border-neo-black shadow-neo p-6 mb-8">
+    <p class="text-lg font-medium mb-4">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadStatsSummary()">
+      Try Again
+    </button>
+  </div>
+  
+  <!-- Stats Summary Cards -->
+  <div *ngIf="!isLoading && !error" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Users Card -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform rotate-1 hover:-rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Total Users</h2>
+          <p class="text-3xl font-bold">{{ stats.totalUsers | number }}</p>
+        </div>
+        <div class="bg-neo-blue text-white p-3 rounded-full">
+          <mat-icon>people</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4">
+        <span class="font-medium">{{ stats.subscribedUsers | number }}</span> premium subscribers
+      </p>
+    </div>
+    
+    <!-- Videos Card -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform -rotate-1 hover:rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Total Videos</h2>
+          <p class="text-3xl font-bold">{{ stats.totalVideos | number }}</p>
+        </div>
+        <div class="bg-neo-red text-white p-3 rounded-full">
+          <mat-icon>videocam</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4">
+        <span class="font-medium">{{ stats.premiumVideos | number }}</span> premium videos
+      </p>
+    </div>
+    
+    <!-- Engagements Card -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform rotate-1 hover:-rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Total Engagements</h2>
+          <p class="text-3xl font-bold">{{ stats.totalViews + stats.totalLikes | number }}</p>
+        </div>
+        <div class="bg-neo-yellow text-neo-black p-3 rounded-full">
+          <mat-icon>thumb_up</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4">
+        <span class="font-medium">{{ stats.totalViews | number }}</span> views, 
+        <span class="font-medium">{{ stats.totalLikes | number }}</span> likes
+      </p>
+    </div>
+    
+    <!-- Revenue Card -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform -rotate-1 hover:rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Monthly Revenue</h2>
+          <p class="text-3xl font-bold">€{{ stats.revenueThisMonth | number:'1.2-2' }}</p>
+        </div>
+        <div class="bg-neo-green text-white p-3 rounded-full">
+          <mat-icon>euro</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4">
+        <span [class.text-green-600]="stats.percentGrowth > 0" 
+              [class.text-red-600]="stats.percentGrowth < 0">
+          {{ stats.percentGrowth > 0 ? '+' : '' }}{{ stats.percentGrowth }}%
+        </span> from last month
+      </p>
+    </div>
+  </div>
+  
+  <!-- Charts Section -->
+  <div *ngIf="!isLoading && !error" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- User Growth Chart -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform rotate-1">
+      <h2 class="text-xl font-bold mb-6">User Growth</h2>
+      <canvas baseChart 
+              [datasets]="userChartData" 
+              [labels]="userChartLabels" 
+              [options]="userChartOptions"
+              [type]="userChartType">
+      </canvas>
+    </div>
+    
+    <!-- Content Engagement Chart -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform -rotate-1">
+      <h2 class="text-xl font-bold mb-6">Content Engagement</h2>
+      <canvas baseChart 
+              [datasets]="engagementChartData" 
+              [labels]="engagementChartLabels" 
+              [options]="engagementChartOptions"
+              [type]="engagementChartType">
+      </canvas>
+    </div>
+  </div>
+  
+  <!-- Revenue Chart -->
+  <div *ngIf="!isLoading && !error" class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 mb-8">
+    <h2 class="text-xl font-bold mb-6">Subscription Revenue</h2>
+    <canvas baseChart 
+            [datasets]="revenueChartData" 
+            [labels]="revenueChartLabels" 
+            [options]="revenueChartOptions"
+            [type]="revenueChartType">
+    </canvas>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6">
+    <h2 class="text-xl font-bold mb-6">Quick Actions</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <a routerLink="/admin/videos/upload" class="neo-button bg-neo-blue text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">add_circle</mat-icon>
+        Upload New Video
+      </a>
+      
+      <a routerLink="/admin/videos" class="neo-button bg-neo-yellow text-neo-black font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">video_library</mat-icon>
+        Manage Videos
+      </a>
+      
+      <a routerLink="/admin/users" class="neo-button bg-neo-red text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">people</mat-icon>
+        Manage Users
+      </a>
+    </div>
+  </div>
+</div>

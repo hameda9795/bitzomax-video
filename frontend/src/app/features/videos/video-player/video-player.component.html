@@ -1,0 +1,193 @@
+<div class="neo-video-player w-full">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="bg-neo-gray flex justify-center items-center aspect-w-619 aspect-h-100">
+    <mat-spinner diameter="48" color="accent"></mat-spinner>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error" class="bg-neo-red text-white flex flex-col justify-center items-center aspect-w-619 aspect-h-100 p-6 text-center">
+    <mat-icon class="text-4xl mb-4">error_outline</mat-icon>
+    <h3 class="text-xl font-bold mb-2">Error Loading Video</h3>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Video container -->
+  <div 
+    *ngIf="!isLoading && !error" 
+    class="relative aspect-w-619 aspect-h-100"
+    (mousemove)="showControls()"
+    (mouseout)="isPlaying ? controlsVisible = false : null"
+  >
+    <!-- Video element -->
+    <video 
+      #videoElement
+      [src]="video?.videoUrl"
+      [poster]="video?.thumbnailUrl"
+      [muted]="volume === 0"
+      (timeupdate)="onTimeUpdate()"
+      (loadedmetadata)="onVideoMetadataLoaded()"
+      (click)="togglePlayPause()"
+      class="w-full h-full object-contain"
+      crossorigin="anonymous"
+    ></video>
+
+    <!-- Premium content overlay when preview time is reached -->
+    <div 
+      *ngIf="isPremium && !isSubscriber && previewTimeReached"
+      class="premium-overlay"
+    >
+      <div class="premium-badge">
+        PREMIUM CONTENT
+      </div>
+      <h3 class="text-2xl font-bold mb-4">Subscribe to Continue Watching</h3>
+      <p class="mb-6">You've reached the 30-second preview limit for this premium video.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          class="neo-button neo-button-primary" 
+          (click)="router.navigate(['/subscription'])"
+        >
+          Subscribe Now
+        </button>
+        <button 
+          mat-stroked-button 
+          color="accent" 
+          class="neo-button" 
+          (click)="router.navigate(['/auth/login'])"
+          *ngIf="!isAuthenticated"
+        >
+          Sign In
+        </button>
+      </div>
+    </div>
+
+    <!-- Video controls -->
+    <div 
+      class="video-controls"
+      [ngClass]="{'opacity-0': !controlsVisible && isPlaying, 'opacity-100': controlsVisible || !isPlaying}"
+    >
+      <!-- Progress bar -->
+      <div 
+        class="w-full h-2 bg-gray-300 cursor-pointer mb-4" 
+        (click)="seekVideo($event)"
+      >
+        <!-- Total progress -->
+        <div 
+          class="h-full bg-neo-blue"
+          [style.width.%]="progress"
+        ></div>
+        
+        <!-- Preview limit indicator for premium content -->
+        <div 
+          *ngIf="isPremium && !isSubscriber && duration > 0" 
+          class="absolute h-full bg-neo-red opacity-50"
+          [style.width.%]="(previewTimeLimit / duration) * 100"
+          [style.left]="'0'"
+        ></div>
+      </div>
+
+      <!-- Control buttons -->
+      <div class="flex items-center justify-between w-full">
+        <div class="flex items-center gap-3">
+          <!-- Play/Pause -->
+          <button 
+            mat-icon-button 
+            (click)="togglePlayPause()"
+            [attr.aria-label]="isPlaying ? 'Pause' : 'Play'"
+          >
+            <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+          </button>
+          
+          <!-- Volume control -->
+          <div class="flex items-center">
+            <button 
+              mat-icon-button 
+              (click)="toggleMute()" 
+              [attr.aria-label]="volume === 0 ? 'Unmute' : 'Mute'"
+            >
+              <mat-icon>
+                {{ volume === 0 ? 'volume_off' : volume < 0.5 ? 'volume_down' : 'volume_up' }}
+              </mat-icon>
+            </button>
+            <mat-slider 
+              class="w-20 hidden md:block" 
+              color="primary" 
+              min="0" 
+              max="1" 
+              step="0.1"
+              [discrete]="true"
+              [showTickMarks]="false">
+              <input matSliderThumb [(ngModel)]="volume" (valueChange)="setVolume($event)" aria-label="Volume control" title="Volume slider" placeholder="Volume">
+            </mat-slider>
+          </div>
+          
+          <!-- Time display -->
+          <div class="text-sm text-white hidden sm:block">
+            {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Like button -->
+          <button 
+            mat-icon-button 
+            (click)="likeVideo()"
+            [color]="video?.likesCount ? 'accent' : ''"
+            [attr.aria-label]="video?.likesCount ? 'Unlike video' : 'Like video'"
+            class="hidden sm:block"
+          >
+            <mat-icon>{{ video?.likesCount ? 'favorite' : 'favorite_border' }}</mat-icon>
+          </button>
+          
+          <!-- Premium badge -->
+          <div 
+            *ngIf="isPremium" 
+            class="bg-neo-yellow text-neo-black px-2 py-1 text-xs font-bold rounded hidden sm:block"
+          >
+            PREMIUM
+          </div>
+          
+          <!-- Fullscreen toggle -->
+          <button 
+            mat-icon-button 
+            (click)="toggleFullscreen()" 
+            aria-label="Toggle fullscreen"
+          >
+            <mat-icon>fullscreen</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Video info section -->
+  <div *ngIf="video" class="neo-card mt-4 p-4">
+    <h2 class="text-xl font-bold mb-1">{{ video.title }}</h2>
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <span class="text-gray-600">{{ video.viewCount | number }} views</span>
+        <span class="mx-2">•</span>
+        <span class="text-gray-600">{{ video.uploadDate | date }}</span>
+      </div>
+      <div class="flex items-center">
+        <button 
+          mat-icon-button 
+          (click)="likeVideo()"
+          [color]="video.likesCount ? 'accent' : ''"
+          [attr.aria-label]="video.likesCount ? 'Unlike video' : 'Like video'"
+        >
+          <mat-icon>{{ video.likesCount ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+        <span>{{ video.likesCount | number }}</span>
+      </div>
+    </div>
+    <p class="whitespace-pre-line">{{ video.description }}</p>
+    
+    <!-- Poem text if available -->
+    <div *ngIf="video.poemText" class="mt-4 p-4 bg-gray-100 rounded-md font-serif italic">
+      <h3 class="text-lg font-bold mb-2">Poem</h3>
+      <p class="whitespace-pre-line">{{ video.poemText }}</p>
+    </div>
+  </div>
+</div>

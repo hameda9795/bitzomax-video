@@ -1,0 +1,235 @@
+/**
+ * Neo Brutalism Design System Styles for Bitzomax
+ */
+
+/* Neo Brutalism design system for Bitzomax */
+
+// Core colors
+$neo-yellow: #FFDD00;
+$neo-blue: #2B7FFF;
+$neo-red: #FF4B4B;
+$neo-black: #000000;
+$neo-white: #FFFFFF;
+
+// Typography
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;600;800&display=swap');
+
+// Neo Brutalism Mixins
+@mixin neo-shadow($color: $neo-black, $offset: 4px) {
+  box-shadow: $offset $offset 0 $color;
+  position: relative;
+}
+
+@mixin neo-button {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 3px solid $neo-black;
+  padding: 0.75rem 1.5rem;
+  background-color: $neo-yellow;
+  color: $neo-black;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  cursor: pointer;
+  @include neo-shadow($neo-black, 4px);
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 $neo-black;
+  }
+
+  &:active {
+    transform: translate(0px, 0px);
+    box-shadow: 2px 2px 0 $neo-black;
+  }
+
+  &.primary {
+    background-color: $neo-yellow;
+  }
+
+  &.secondary {
+    background-color: $neo-blue;
+    color: $neo-white;
+  }
+
+  &.danger {
+    background-color: $neo-red;
+    color: $neo-white;
+  }
+
+  &.disabled {
+    background-color: #CCCCCC;
+    cursor: not-allowed;
+    opacity: 0.7;
+    &:hover {
+      transform: none;
+      box-shadow: 4px 4px 0 $neo-black;
+    }
+  }
+}
+
+@mixin neo-card {
+  background-color: $neo-white;
+  border: 3px solid $neo-black;
+  padding: 1.5rem;
+  @include neo-shadow($neo-black, 8px);
+}
+
+@mixin neo-input {
+  font-family: 'Space Mono', monospace;
+  border: 3px solid $neo-black;
+  padding: 0.75rem;
+  background-color: $neo-white;
+  @include neo-shadow($neo-black, 4px);
+  
+  &:focus {
+    outline: none;
+    box-shadow: 6px 6px 0 $neo-blue;
+  }
+  
+  &.error {
+    box-shadow: 4px 4px 0 $neo-red;
+  }
+}
+
+// Core classes
+.neo-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.neo-heading {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: $neo-yellow;
+  }
+}
+
+.neo-text {
+  font-family: 'Work Sans', sans-serif;
+  line-height: 1.5;
+}
+
+.neo-button {
+  @include neo-button;
+}
+
+.neo-card {
+  @include neo-card;
+}
+
+.neo-input {
+  @include neo-input;
+}
+
+// Video Player specific styles
+.neo-video-player {
+  position: relative;
+  border: 3px solid $neo-black;
+  @include neo-shadow($neo-black, 8px);
+  
+  aspect-ratio: 6/19;
+  width: 100%;
+  background-color: $neo-black;
+  
+  .controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .control-button {
+      background-color: $neo-yellow;
+      border: 2px solid $neo-black;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      @include neo-shadow($neo-black, 2px);
+      
+      &:hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 3px 3px 0 $neo-black;
+      }
+      
+      &:active {
+        transform: translate(0px, 0px);
+        box-shadow: 1px 1px 0 $neo-black;
+      }
+    }
+    
+    .progress-bar {
+      flex-grow: 1;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.3);
+      position: relative;
+      cursor: pointer;
+      border: 2px solid $neo-white;
+      
+      .current-progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        background-color: $neo-yellow;
+        transition: width 0.1s linear;
+      }
+    }
+  }
+  
+  .preview-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: $neo-yellow;
+    color: $neo-black;
+    padding: 1rem 1.5rem;
+    border: 3px solid $neo-black;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    @include neo-shadow($neo-black, 4px);
+    z-index: 10;
+  }
+}
+
+// Animation for subscription prompt
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.subscription-prompt {
+  animation: pulse 2s infinite;
+  background-color: $neo-yellow;
+  padding: 1rem;
+  text-align: center;
+  border: 3px solid $neo-black;
+  @include neo-shadow($neo-black, 6px);
+  margin-top: 1rem;
+  
+  .neo-button {
+    margin-top: 0.5rem;
+  }
+}

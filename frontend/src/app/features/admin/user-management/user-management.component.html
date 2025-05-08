@@ -1,0 +1,176 @@
+<div class="admin-container p-6">
+  <div class="neo-header bg-neo-yellow border-4 border-neo-black shadow-neo-lg p-6 mb-8">
+    <h1 class="text-3xl font-display font-bold mb-2">User Management</h1>
+    <p class="text-lg">Manage users and subscriptions</p>
+  </div>
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-8 text-center">
+      <mat-spinner color="accent" diameter="48" class="mx-auto mb-4"></mat-spinner>
+      <p class="text-lg font-medium">Loading users...</p>
+    </div>
+  </div>
+  
+  <!-- Error State -->
+  <div *ngIf="error" class="neo-card bg-neo-red text-white border-4 border-neo-black shadow-neo p-6 mb-8">
+    <p class="text-lg font-medium mb-4">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadUsers()">
+      Try Again
+    </button>
+  </div>
+  
+  <!-- Content Container -->
+  <div *ngIf="!isLoading && !error" class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6">
+    <!-- Filter -->
+    <div class="mb-6">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Filter users</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search by name, email, username...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full">
+        
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let user"> {{ user.id }} </td>
+        </ng-container>
+        
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Username </th>
+          <td mat-cell *matCellDef="let user"> {{ user.username }} </td>
+        </ng-container>
+        
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+          <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
+        </ng-container>
+        
+        <!-- Full Name Column -->
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Full Name </th>
+          <td mat-cell *matCellDef="let user"> {{ user.fullName || '-' }} </td>
+        </ng-container>
+        
+        <!-- Role Column -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef> Role </th>
+          <td mat-cell *matCellDef="let user"> 
+            <div class="flex items-center">
+              <span 
+                [class.bg-neo-blue]="user.role === 'ADMIN'"
+                [class.text-white]="user.role === 'ADMIN'"
+                [class.bg-neo-gray]="user.role === 'USER'"
+                class="px-3 py-1 rounded-full text-sm font-medium border border-neo-black"
+              >
+                {{ user.role }}
+              </span>
+              <button 
+                mat-icon-button 
+                matTooltip="Toggle role"
+                (click)="toggleUserRole(user.id, user.role)"
+              >
+                <mat-icon class="text-sm">swap_horiz</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Subscription Column -->
+        <ng-container matColumnDef="subscribed">
+          <th mat-header-cell *matHeaderCellDef> Subscription </th>
+          <td mat-cell *matCellDef="let user"> 
+            <div class="flex flex-col">
+              <div class="flex items-center mb-1">
+                <mat-slide-toggle 
+                  [checked]="user.subscribed" 
+                  (change)="toggleSubscription(user.id, user.subscribed)"
+                  color="primary"
+                  class="mr-2">
+                </mat-slide-toggle>
+                <span 
+                  *ngIf="user.subscribed" 
+                  class="bg-neo-yellow text-neo-black px-2 py-1 text-xs font-bold border-2 border-neo-black shadow-neo transform rotate-3"
+                >
+                  PREMIUM
+                </span>
+              </div>
+              <div *ngIf="user.subscribed && user.subscriptionEndDate" class="text-xs text-gray-600">
+                Expires: {{ formatDate(user.subscriptionEndDate) }}
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Join Date Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Joined </th>
+          <td mat-cell *matCellDef="let user"> {{ formatDate(user.createdAt) }} </td>
+        </ng-container>
+        
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let user"> 
+            <div class="flex space-x-2">
+              <button 
+                mat-icon-button 
+                matTooltip="View Activity"
+                (click)="viewUserActivity(user.id)"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              
+              <button 
+                mat-icon-button 
+                matTooltip="Delete User"
+                color="warn"
+                (click)="deleteUser(user.id, user.username)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+        
+        <!-- Row Definitions -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr 
+          mat-row 
+          *matRowDef="let row; columns: displayedColumns;" 
+          class="hover:bg-gray-100 transition-colors"
+        ></tr>
+        
+        <!-- No Data Row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell py-4 text-center" [attr.colspan]="displayedColumns.length">
+            <div class="flex flex-col items-center p-6">
+              <mat-icon class="text-6xl text-gray-300 mb-4">person_off</mat-icon>
+              <p class="text-lg font-medium text-gray-500">No users found</p>
+              <p *ngIf="dataSource?.filter" class="text-gray-500">
+                No results matching "{{dataSource.filter}}"
+              </p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSize]="10"
+      [length]="totalUsers"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="mt-4"
+    ></mat-paginator>
+  </div>
+</div>
