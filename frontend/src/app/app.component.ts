@@ -44,4 +44,17 @@ export class AppComponent implements OnInit {
     // For now, navigate to video upload page
     this.router.navigate(['/videos/upload']);
   }
+
+  navigateToDashboard(): void {
+    // Check if user is admin, navigate to appropriate dashboard
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        if (user.role === 'ADMIN') {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+      }
+    }).unsubscribe(); // Unsubscribe immediately to prevent memory leaks
+  }
 }

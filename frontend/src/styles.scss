@@ -366,18 +366,150 @@ button.icon-only .mat-icon,
 .neo-menu-item {
   padding: 12px 16px !important;
   margin-bottom: 12px !important;
-  border: 2px solid var(--color-neo-black) !important;
-  border-radius: 8px !important;
+  border: 3px solid var(--color-neo-black) !important;
+  border-radius: 0px !important;
   transition: all 0.2s ease-in-out !important;
 }
 
 .neo-menu-item:hover {
-  background-color: var(--color-neo-yellow) !important;
-  transform: translate(-2px, -2px) !important;
-  box-shadow: 4px 4px 0px var(--color-neo-black) !important;
+  transform: translate(-3px, -3px) !important;
+  box-shadow: 5px 5px 0px var(--color-neo-black) !important;
 }
 
-.neo-menu-item.active {
-  background-color: var(--color-neo-blue) !important;
-  color: var(--color-neo-white) !important;
+/* Neo Brutalism Menu Panel Styling */
+.neo-brutalism-menu-panel {
+  background: transparent !important;
+  border-radius: 0 !important;
+  margin-top: 10px !important;
+  max-width: none !important;
+  width: 280px !important;
+  transform-origin: top right !important;
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+.neo-brutalism-menu-panel .mat-mdc-menu-content {
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Base styles for all menu items */
+.neo-brutalism-menu-panel .mat-mdc-menu-item {
+  margin-bottom: 8px !important;
+  border-radius: 0 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  overflow: visible !important;
+  position: relative !important;
+  padding: 14px 16px !important;
+  height: auto !important;
+  line-height: normal !important;
+  width: 100% !important;
+  border: 2px solid var(--color-neo-black) !important;
+  box-shadow: 3px 3px 0 var(--color-neo-black) !important;
+  transition: all 0.2s ease-in-out !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.neo-brutalism-menu-panel .mat-mdc-menu-item:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 5px 5px 0 var(--color-neo-black) !important;
+}
+
+/* Menu item text styling */
+.neo-brutalism-menu-panel .mat-mdc-menu-item span {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: black !important;
+}
+
+/* Menu item icon styling */
+.neo-brutalism-menu-panel .mat-mdc-menu-item .mat-icon {
+  margin-right: 16px !important;
+  font-size: 24px !important;
+  height: 24px !important;
+  width: 24px !important;
+}
+
+/* Individual menu item styles */
+.neo-brutalism-menu-panel .profile {
+  background-color: white !important;
+}
+
+.neo-brutalism-menu-panel .favorites {
+  background-color: #FF4B4B !important; /* Red */
+}
+
+.neo-brutalism-menu-panel .favorites .mat-icon,
+.neo-brutalism-menu-panel .favorites span {
+  color: white !important;
+}
+
+.neo-brutalism-menu-panel .history {
+  background-color: white !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.neo-brutalism-menu-panel .admin {
+  background-color: #FF4B4B !important; /* Red */
+}
+
+.neo-brutalism-menu-panel .admin .mat-icon,
+.neo-brutalism-menu-panel .admin span {
+  color: white !important;
+}
+
+.neo-brutalism-menu-panel .premium {
+  background-color: #2B7FFF !important; /* Blue */
+}
+
+.neo-brutalism-menu-panel .premium .mat-icon,
+.neo-brutalism-menu-panel .premium span {
+  color: white !important;
+}
+
+.neo-brutalism-menu-panel .subscription {
+  background-color: #2B7FFF !important; /* Blue */
+}
+
+.neo-brutalism-menu-panel .subscription .mat-icon,
+.neo-brutalism-menu-panel .subscription span {
+  color: white !important;
+}
+
+.neo-brutalism-menu-panel .logout {
+  background-color: #FFDD00 !important; /* Yellow */
+}
+
+.neo-brutalism-menu-panel .logout .mat-icon,
+.neo-brutalism-menu-panel .logout span {
+  color: black !important;
+}
+
+/* Fix for CDK overlay positioning */
+.cdk-overlay-connected-position-bounding-box {
+  top: 0 !important;
+  left: 0 !important;
+  height: auto !important;
+  width: auto !important;
+  transform: none !important;
+}
+
+.cdk-overlay-pane {
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  position: absolute !important;
+}
+
+/* Add mobile-friendly styles for the menu */
+@media (max-width: 768px) {
+  .neo-brutalism-menu-panel {
+    width: 250px !important;
+  }
 }

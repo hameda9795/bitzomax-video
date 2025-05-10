@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminGuard } from './guards/admin.guard';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -17,11 +18,18 @@ const routes: Routes = [
   },
   {
     path: 'profile',
-    loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule)
+    loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./features/user-dashboard/user-dashboard.module').then(m => m.UserDashboardModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'subscription',
-    loadChildren: () => import('./features/subscription/subscription.module').then(m => m.SubscriptionModule)
+    loadChildren: () => import('./features/subscription/subscription.module').then(m => m.SubscriptionModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'admin',

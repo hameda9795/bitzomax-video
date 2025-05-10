@@ -130,7 +130,7 @@
   <!-- Quick Actions -->
   <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6">
     <h2 class="text-xl font-bold mb-6">Quick Actions</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <a routerLink="/admin/videos/upload" class="neo-button bg-neo-blue text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
         <mat-icon class="mr-2">add_circle</mat-icon>
         Upload New Video
@@ -144,6 +144,11 @@
       <a routerLink="/admin/users" class="neo-button bg-neo-red text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
         <mat-icon class="mr-2">people</mat-icon>
         Manage Users
+      </a>
+      
+      <a routerLink="/" class="neo-button bg-neo-green text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">home</mat-icon>
+        Back to Main Site
       </a>
     </div>
   </div>

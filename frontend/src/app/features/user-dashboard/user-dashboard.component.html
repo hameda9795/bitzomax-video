@@ -1,0 +1,145 @@
+<div class="dashboard-container p-6">
+  <div class="neo-header bg-neo-blue text-white border-4 border-neo-black shadow-neo-lg p-6 mb-8">
+    <h1 class="text-3xl font-display font-bold mb-2">My Dashboard</h1>
+    <p class="text-lg">Welcome back, {{username}}!</p>
+    <a *ngIf="isAdmin" routerLink="/admin/dashboard" class="mt-4 inline-block text-white hover:text-neo-yellow">
+      <mat-icon class="align-middle mr-1">admin_panel_settings</mat-icon>
+      Switch to Admin Dashboard
+    </a>
+  </div>
+  
+  <!-- User Stats Summary -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Videos Watched -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform rotate-1 hover:-rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Videos Watched</h2>
+          <p class="text-3xl font-bold">{{userStats.videosWatched || 0}}</p>
+        </div>
+        <div class="bg-neo-blue text-white p-3 rounded-full">
+          <mat-icon>visibility</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4">
+        <span class="text-blue-600">{{userStats.watchTimeInHours || 0}} hours</span> of total watch time
+      </p>
+    </div>
+    
+    <!-- Favorite Videos -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform -rotate-1 hover:rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Favorite Videos</h2>
+          <p class="text-3xl font-bold">{{userStats.favorites || 0}}</p>
+        </div>
+        <div class="bg-neo-red text-white p-3 rounded-full">
+          <mat-icon>favorite</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4">
+        <a routerLink="/profile/favorites" class="text-blue-600 hover:underline">View all favorites</a>
+      </p>
+    </div>
+    
+    <!-- Subscription Status -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform rotate-1 hover:-rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Subscription</h2>
+          <p class="text-3xl font-bold" [class.text-green-600]="isSubscribed" [class.text-gray-600]="!isSubscribed">
+            {{isSubscribed ? 'Premium' : 'Free'}}
+          </p>
+        </div>
+        <div class="bg-neo-yellow text-neo-black p-3 rounded-full">
+          <mat-icon>stars</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4" *ngIf="isSubscribed">
+        Expires: {{subscriptionEnd | date:'mediumDate'}}
+      </p>
+      <p class="text-sm mt-4" *ngIf="!isSubscribed">
+        <a routerLink="/subscription" class="text-blue-600 hover:underline">Upgrade now</a>
+      </p>
+    </div>
+    
+    <!-- Comments Posted -->
+    <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 transform -rotate-1 hover:rotate-1 transition-transform">
+      <div class="flex justify-between items-start">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-600">Comments Posted</h2>
+          <p class="text-3xl font-bold">{{userStats.comments || 0}}</p>
+        </div>
+        <div class="bg-neo-green text-white p-3 rounded-full">
+          <mat-icon>comment</mat-icon>
+        </div>
+      </div>
+      <p class="text-sm mt-4">
+        {{userStats.commentsThisMonth || 0}} comments this month
+      </p>
+    </div>
+  </div>
+  
+  <!-- Recent Activity -->
+  <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6 mb-8">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold">Recent Activity</h2>
+      <a routerLink="/profile/history" class="text-blue-600 hover:underline text-sm">View All</a>
+    </div>
+    
+    <div *ngIf="loading" class="flex justify-center py-8">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+    
+    <div *ngIf="!loading && recentActivity.length === 0" class="text-center py-8 bg-gray-50 rounded-lg">
+      <mat-icon class="text-6xl text-gray-300 mb-2">history</mat-icon>
+      <p class="text-gray-500">No recent activity found</p>
+      <a routerLink="/videos" class="mt-4 inline-block neo-button bg-neo-blue text-white py-2 px-4">Explore Videos</a>
+    </div>
+    
+    <div *ngIf="!loading && recentActivity.length > 0" class="divide-y divide-gray-200">
+      <div *ngFor="let activity of recentActivity" class="py-4 flex items-start gap-4">
+        <div class="flex-shrink-0 w-16 h-9 rounded overflow-hidden border-2 border-neo-black">
+          <img [src]="activity.thumbnail || 'assets/images/placeholder-thumbnail.jpg'" alt="Video thumbnail" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-grow min-w-0">
+          <h3 class="font-medium text-sm truncate">{{activity.title}}</h3>
+          <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
+            <span>{{activity.date | date:'shortDate'}}</span>
+            <span class="inline-block w-1 h-1 rounded-full bg-gray-500"></span>
+            <span>{{activity.type}}</span>
+          </div>
+        </div>
+        <a [routerLink]="['/videos', activity.videoId]" class="flex-shrink-0 text-blue-600 hover:text-blue-800">
+          <mat-icon class="text-base">play_circle_outline</mat-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="neo-card bg-neo-white border-4 border-neo-black shadow-neo p-6">
+    <h2 class="text-xl font-bold mb-6">Quick Actions</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <a routerLink="/profile" class="neo-button bg-neo-blue text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">account_circle</mat-icon>
+        Edit Profile
+      </a>
+      
+      <a routerLink="/profile/favorites" class="neo-button bg-neo-red text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">favorite</mat-icon>
+        My Favorites
+      </a>
+      
+      <a routerLink="/videos/upload" class="neo-button bg-neo-green text-white font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">upload</mat-icon>
+        Upload Video
+      </a>
+      
+      <a routerLink="/videos" class="neo-button bg-neo-yellow text-neo-black font-bold py-4 px-6 border-2 border-neo-black shadow-neo text-center transform hover:translate-y-[-4px] transition-transform flex items-center justify-center">
+        <mat-icon class="mr-2">video_library</mat-icon>
+        Explore Videos
+      </a>
+    </div>
+  </div>
+</div>

@@ -33,7 +33,7 @@
           <li>
             <button 
               class="flex items-center gap-2 text-neo-white relative user-button" 
-              [matMenuTriggerFor]="userMenu">
+              (click)="navigateToDashboard()">
               <span>{{ (currentUser$ | async)?.username }}</span>
               <div class="user-circle w-8 h-8 bg-neo-blue rounded-full flex items-center justify-center border-2 border-neo-black overflow-hidden">
                 <img 
@@ -45,45 +45,15 @@
               </div>
               <span *ngIf="(currentUser$ | async)?.subscribed" class="premium-badge absolute -top-3 -right-3 text-xs">PREMIUM</span>
             </button>
-            <mat-menu #userMenu="matMenu">
-              <a mat-menu-item routerLink="/profile" class="menu-item">
-                <mat-icon>account_circle</mat-icon>
-                <span class="item-text">Profile</span>
-              </a>
-              <a mat-menu-item routerLink="/profile/favorites" class="menu-item">
-                <mat-icon>favorite</mat-icon>
-                <span class="item-text">Favorites</span>
-              </a>
-              <a mat-menu-item routerLink="/profile/history" class="menu-item">
-                <mat-icon>history</mat-icon>
-                <span class="item-text">Watch History</span>
-              </a>
-              
-              <!-- Admin Panel Link - Only visible for ADMIN users -->
-              <ng-container *ngIf="(currentUser$ | async)?.role === 'ADMIN'">
-                <a mat-menu-item routerLink="/admin" class="text-neo-pink menu-item">
-                  <mat-icon>admin_panel_settings</mat-icon>
-                  <span class="item-text">Admin Panel</span>
-                </a>
-              </ng-container>
-              
-              <ng-container *ngIf="!(currentUser$ | async)?.subscribed">
-                <a mat-menu-item routerLink="/subscription" class="menu-item">
-                  <mat-icon>stars</mat-icon>
-                  <span class="item-text">Go Premium</span>
-                </a>
-              </ng-container>
-              <ng-container *ngIf="(currentUser$ | async)?.subscribed">
-                <a mat-menu-item routerLink="/subscription" class="menu-item">
-                  <mat-icon>settings</mat-icon>
-                  <span class="item-text">Manage Subscription</span>
-                </a>
-              </ng-container>
-              <button mat-menu-item (click)="logout()" class="menu-item">
-                <mat-icon>exit_to_app</mat-icon>
-                <span class="item-text">Logout</span>
-              </button>
-            </mat-menu>
+          </li>
+          <!-- Add a logout button since we removed the dropdown menu -->
+          <li>
+            <button 
+              class="text-neo-white hover:text-neo-yellow flex items-center gap-1" 
+              (click)="logout()"
+              matTooltip="Logout">
+              <mat-icon>exit_to_app</mat-icon>
+            </button>
           </li>
         </ng-container>
         
@@ -119,6 +89,7 @@
           <li><a href="#" class="hover:text-neo-yellow">Contact</a></li>
           <li><a href="#" class="hover:text-neo-yellow">Blog</a></li>
           <li><a href="#" class="hover:text-neo-yellow">FAQ</a></li>
+          <li *ngIf="isAuthenticated"><a routerLink="/dashboard" class="hover:text-neo-yellow">My Dashboard</a></li>
         </ul>
       </div>
       
